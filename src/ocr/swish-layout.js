@@ -1,0 +1,6 @@
+const FIELD_ALIASES={pts:['PTS','POINTS'],reb:['REB','REBOUNDS'],ast:['AST','ASSISTS'],stl:['STL','STEALS'],blk:['BLK','BLOCKS'],to:['TO','TOV','TURNOVERS'],pf:['PF','FOULS'],min:['MIN','MINUTES'],fgm:['FGM'],fga:['FGA'],tpm:['3PM','3PTM'],tpa:['3PA','3PTA'],ftm:['FTM'],fta:['FTA']};
+const normal=s=>String(s??'').trim().toUpperCase().replace(/\s+/g,' ');
+export function classifySwishScreen(text=''){const t=normal(text);if(/PLAY[- ]?BY[- ]?PLAY/.test(t))return'play-by-play';if(/SHOT CHART|HEAT MAP/.test(t))return'visualization';if(/BOX SCORE|PTS\s+REB|MIN\s+PTS/.test(t))return'box-score';if(/GAME FLOW|GAME SUMMARY|LEADERS/.test(t))return'game-summary';return'unknown'}
+export function normalizeSwishField(label){const x=normal(label);for(const [key,aliases] of Object.entries(FIELD_ALIASES))if(aliases.includes(x))return key;return null}
+export function parseSwishRow(cells=[]){const out={};for(const cell of cells){const label=normal(cell.label??cell.key);const key=normalizeSwishField(label);if(key!=null){const n=Number(String(cell.value??'').replace(/%/g,''));out[key]=Number.isFinite(n)?n:cell.value}}return out}
+export function swishExtractionResult(text,rows=[]){return {screenType:classifySwishScreen(text),rows:rows.map(parseSwishRow),provider:'swish-layout-v1',status:'review'}}
