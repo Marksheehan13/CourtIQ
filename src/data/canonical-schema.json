@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CourtIQ Verified Game",
+  "type": "object",
+  "required": ["fixtureId", "status", "teams", "verifiedAt", "sources"],
+  "properties": {
+    "fixtureId": {"type":"string"},
+    "status": {"enum":["draft","review","verified"]},
+    "teams": {"type":"object"},
+    "score": {"type":["object","null"]},
+    "quarters": {"type":"array"},
+    "teamStats": {"type":"array"},
+    "playerStats": {"type":"array"},
+    "sources": {"type":"array","items":{"type":"string"}},
+    "verifiedAt": {"type":["string","null"],"format":"date-time"},
+    "verifiedBy": {"type":["string","null"]}
+  }
+}
