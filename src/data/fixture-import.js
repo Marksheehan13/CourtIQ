@@ -1,0 +1,2 @@
+export function normaliseFixture(raw={}){const id=raw.id||raw.fixtureId||`fixture-${Date.now()}`;return {id,seasonId:raw.seasonId||null,competition:raw.competition||'National League',home:String(raw.home||raw.homeTeam||'').trim(),away:String(raw.away||raw.awayTeam||'').trim(),date:raw.date||raw.datetime||null,venue:String(raw.venue||'').trim(),status:raw.status||'scouting',source:raw.source||'manual'}}
+export function importFixtures(rows=[]){return rows.map(normaliseFixture).filter(f=>f.home&&f.away)}
