@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CourtIQ basketball scouting and analytics platform" />
+  <title>CourtIQ — Basketball Intelligence</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">CQ</div><div><strong>CourtIQ</strong><span>Basketball Intelligence</span></div></div>
+      <nav>
+        <button class="nav-item active" data-view="dashboard">Overview</button>
+        <button class="nav-item" data-view="fixtures">Fixtures</button>
+        <button class="nav-item" data-view="scouting">Scouting</button>
+        <button class="nav-item" data-view="teams">Teams</button>
+        <button class="nav-item" data-view="players">Players</button>
+        <button class="nav-item" data-view="reports">Reports</button>
+      </nav>
+      <div class="sidebar-footer"><span class="status-dot"></span> Season 2026/27</div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div><p class="eyebrow">ST PAUL'S · NATIONAL LEAGUE</p><h1 id="page-title">Overview</h1></div><button class="primary" id="new-fixture">+ New fixture</button></header>
+      <section id="view"></section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
