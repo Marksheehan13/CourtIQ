@@ -1,0 +1,3 @@
+export function selectGamesForReport(games=[],{teamId,opponentId,seasonId,limit=10}={}){return games.filter(g=>{if(seasonId&&String(g.seasonId)!==String(seasonId))return false;const ids=Object.keys(g.teams||{});if(teamId&&!ids.includes(String(teamId)))return false;if(opponentId&&!ids.includes(String(opponentId)))return false;return g.status==='verified'}).sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,limit)}
+
+export function reportScopeLabel({teamName,opponentName,seasonName,gameCount}){const parts=[teamName,opponentName?`vs ${opponentName}`:'',seasonName||''].filter(Boolean);return `${parts.join(' · ')} · ${gameCount} verified game${gameCount===1?'':'s'}`}
