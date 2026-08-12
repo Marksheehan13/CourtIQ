@@ -1,0 +1,3 @@
+export const GAME_SCHEMA_VERSION=1;
+export function createGame(raw={}){return {schemaVersion:GAME_SCHEMA_VERSION,id:raw.id||`game-${Date.now()}`,fixtureId:raw.fixtureId||null,seasonId:raw.seasonId||null,date:raw.date||null,status:raw.status||'unverified',teams:raw.teams||{},quarters:Array.isArray(raw.quarters)?raw.quarters:[],overtime:Array.isArray(raw.overtime)?raw.overtime:[],playerStats:Array.isArray(raw.playerStats)?raw.playerStats:[],teamStats:Array.isArray(raw.teamStats)?raw.teamStats:[],sources:Array.isArray(raw.sources)?raw.sources:[],verification:raw.verification||{status:'unverified',issues:[]}}}
+export function gameComplete(game){return Boolean(game?.date&&Object.keys(game.teams||{}).length>=2&&game.playerStats?.length)}
