@@ -1,0 +1,12 @@
+create table if not exists seasons (id text primary key,name text not null,competition text,created_at timestamptz default now());
+create table if not exists teams (id text primary key,name text not null unique);
+create table if not exists players (id text primary key,team_id text references teams(id),number text,name text not null,created_at timestamptz default now());
+create table if not exists fixtures (id text primary key,season_id text references seasons(id),home_team_id text references teams(id),away_team_id text references teams(id),game_date date,venue text,status text default 'scouting',created_at timestamptz default now());
+create table if not exists games (id text primary key,fixture_id text unique references fixtures(id) on delete cascade,final_home integer,final_away integer,status text default 'unverified',verified_at timestamptz,created_at timestamptz default now());
+create table if not exists game_quarters (game_id text references games(id) on delete cascade,period integer,home_points integer,away_points integer,primary key(game_id,period));
+create table if not exists screenshots (id text primary key,fixture_id text references fixtures(id) on delete cascade,file_name text not null,storage_path text,ocr_status text default 'unprocessed',created_at timestamptz default now());
+create table if not exists player_game_stats (game_id text references games(id) on delete cascade,player_id text references players(id),pts numeric,reb numeric,ast numeric,stl numeric,blk numeric,to_count numeric,pf numeric,fgm numeric,fga numeric,tpm numeric,tpa numeric,ftm numeric,fta numeric,minutes numeric,verified boolean default false,primary key(game_id,player_id));
+create table if not exists team_game_stats (game_id text references games(id) on delete cascade,team_id text references teams(id),pts numeric,reb numeric,ast numeric,to_count numeric,fgm numeric,fga numeric,tpm numeric,tpa numeric,ftm numeric,fta numeric,primary key(game_id,team_id));
+create index if not exists fixtures_season_date_idx on fixtures(season_id,game_date);
+create index if not exists games_status_idx on games(status);
+create index if not exists player_stats_player_idx on player_game_stats(player_id);
