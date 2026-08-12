@@ -63,3 +63,7 @@ Include:
 - Include the report generation date.
 - Include the number of verified games used for each historical insight.
 - Keep reports printable on A4.
+
+## Traceability
+
+Every statistical claim in a generated report must resolve to one or more verified fixture records. AI-generated narrative may interpret verified data but must not invent missing statistics. If the sample is insufficient, the report should explicitly say so.
