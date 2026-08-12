@@ -1,0 +1,4 @@
+import { validatePlayerStatRow, validateTeamStats } from '../data/validation.js';
+import { isGameStructurallyComplete } from '../data/game-model.js';
+
+export function verifyGame(game,{reviewer='local-user'}={}){const errors=[];if(!isGameStructurallyComplete(game))errors.push('Game is structurally incomplete');for(const [id,t] of Object.entries(game.teams||{})){const v=validateTeamStats(t);if(!v.valid)errors.push(`${id}: ${v.errors.join(', ')}`)}for(const p of game.playerStats||[]){const v=validatePlayerStatRow(p);if(!v.valid)errors.push(`${p.name||p.playerId||'player'}: ${v.errors.join(', ')}`)}if(errors.length)return {...game,verification:{status:'rejected',reviewedBy:reviewer,reviewedAt:new Date().toISOString(),errors}};return {...game,status:'verified',verification:{status:'verified',reviewedBy:reviewer,reviewedAt:new Date().toISOString(),errors:[]}}}
