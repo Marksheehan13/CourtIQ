@@ -1,0 +1,2 @@
+export function trend(values=[]){const nums=values.map(Number).filter(Number.isFinite);if(nums.length<2)return {direction:'insufficient',delta:null};const first=nums[0],last=nums[nums.length-1];const delta=last-first;return {direction:delta>0?'up':delta<0?'down':'flat',delta,percent:first?delta/Math.abs(first):null};}
+export function gameTrend(games=[],teamId,key='pts'){const ordered=[...games].filter(g=>g.teams?.[teamId]).sort((a,b)=>new Date(a.date)-new Date(b.date));return {key,games:ordered.length,trend:trend(ordered.map(g=>g.teams[teamId][key]))};}
