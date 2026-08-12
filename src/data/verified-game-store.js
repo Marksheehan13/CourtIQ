@@ -1,0 +1,3 @@
+const KEY='courtiq-verified-games-v1';const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return []}};const write=x=>{localStorage.setItem(KEY,JSON.stringify(x));return x};
+export function saveVerifiedGame(game){if(game?.verification?.status!=='verified')throw new Error('Only verified games may enter the trusted store');const all=read().filter(x=>String(x.id)!==String(game.id));all.push({...game,status:'verified',verifiedAt:game.verification.reviewedAt||new Date().toISOString()});return write(all)}
+export function getVerifiedGames(filters={}){return read().filter(g=>(!filters.seasonId||String(g.seasonId)===String(filters.seasonId))&&(!filters.fixtureId||String(g.fixtureId)===String(filters.fixtureId)))}
