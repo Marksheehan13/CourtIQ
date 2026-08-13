@@ -1,0 +1,3 @@
+/api/ocr /.netlify/functions/ocr 200
+/api/pdf /.netlify/functions/pdf 200
+/* /index.html 200
