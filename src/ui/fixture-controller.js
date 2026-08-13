@@ -1,27 +1,7 @@
-import { getAppData, saveFixture } from '../data/app-store.js';
-import { fixtureWorkspaceHtml } from './fixture-workspace.js';
-import { ingestImages } from './workflow.js';
-
-export function mountFixtureWorkspace(root, fixture) {
-  const render = () => {
-    const data = getAppData();
-    const screenshots = data.screenshots.filter(s => String(s.fixtureId) === String(fixture.id));
-    root.innerHTML = fixtureWorkspaceHtml(fixture, { screenshots });
-    const input = root.querySelector('#fixture-files');
-    input?.addEventListener('change', async e => {
-      if (!e.target.files?.length) return;
-      input.disabled = true;
-      try { await ingestImages(fixture.id, [...e.target.files]); render(); }
-      catch (err) { console.error(err); }
-      finally { input.disabled = false; }
-    });
-  };
-  render();
-  return { refresh: render };
-}
-
-export function markFixtureStage(fixtureId, status) {
-  const fixture = getAppData().fixtures.find(f => String(f.id) === String(fixtureId));
-  if (!fixture) return null;
-  return saveFixture({ ...fixture, status });
-}
+import {getAppData} from '../data/app-store.js';
+import {fixtureWorkspaceHtml} from './fixture-workspace.js';
+import {ingestImages} from './workflow.js';
+import {reviewWorkspaceHtml,wireReview} from './review-workspace.js';
+export function mountFixtureWorkspace(root,fixture){const render=()=>{const data=getAppData();const screenshots=data.screenshots.filter(s=>String(s.fixtureId)===String(fixture.id));root.innerHTML=fixtureWorkspaceHtml(fixture,{screenshots});const input=root.querySelector('#fixture-files');input?.addEventListener('change',async e=>{if(!e.target.files?.length)return;input.disabled=true;try{await ingestImages(fixture.id,[...e.target.files]);render()}catch(err){console.error(err)}finally{input.disabled=false}});root.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>openReview(root,fixture,b.dataset.review))};render();return {refresh:render}}
+function openReview(root,fixture,extractionId){const data=getAppData();const extraction=data.extractions.find(x=>x.id===extractionId);const screenshot=data.screenshots.find(x=>x.id===extraction?.screenshotId);if(!extraction||!screenshot)return;root.innerHTML=reviewWorkspaceHtml(extraction,screenshot);wireReview(root,{extraction,screenshot,fixtureId:fixture.id,onDone:()=>mountFixtureWorkspace(root,fixture).refresh()})}
+export function markFixtureStage(fixtureId,status){const d=getAppData();const fixture=d.fixtures.find(f=>String(f.id)===String(fixtureId));if(!fixture)return null;fixture.status=status;localStorage.setItem('courtiq:data:v1',JSON.stringify(d));return fixture}
