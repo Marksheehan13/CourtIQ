@@ -1,0 +1,2 @@
+export function shootingStats(s={}){const fgm=Number(s.fgm)||0,fga=Number(s.fga)||0,tpm=Number(s.tpm)||0,tpa=Number(s.tpa)||0,ftm=Number(s.ftm)||0,fta=Number(s.fta)||0;return {fgPct:fga?fgm/fga*100:null,threePct:tpa?tpm/tpa*100:null,ftPct:fta?ftm/fta*100:null,efgPct:fga?(fgm+.5*tpm)/fga*100:null};}
+export function efficiency(s={}){return (Number(s.pts)||0)+(Number(s.reb)||0)+(Number(s.ast)||0)+(Number(s.stl)||0)+(Number(s.blk)||0)-(Number(s.fga)||0-(Number(s.fgm)||0))-(Number(s.fta)||0-(Number(s.ftm)||0)-(Number(s.to)||0);}
