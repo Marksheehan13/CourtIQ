@@ -1,0 +1,4 @@
+import {saveScreenshot,saveExtraction} from '../data/app-store.js';
+import {prepareScreenshotForOcr} from '../ocr/pipeline.js';
+export async function ingestImages(fixtureId,files=[]){for(const file of files){const dataUrl=await readFile(file);const screenshot={id:crypto.randomUUID(),fixtureId,filename:file.name,mimeType:file.type,size:file.size,data:dataUrl,category:'unknown',uploadedAt:new Date().toISOString()};saveScreenshot(screenshot);const request=await prepareScreenshotForOcr({fixtureId,screenshot});saveExtraction({id:crypto.randomUUID(),screenshotId:screenshot.id,fixtureId,engine:'pending',rawOutput:null,candidates:{},confidence:null,status:request.status,createdAt:request.createdAt})} }
+function readFile(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
