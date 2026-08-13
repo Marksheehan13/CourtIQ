@@ -1,4 +1,4 @@
-const KEY='courtiq:data:v1';
+const KEY='courtiq:data:v2';
 const seed={fixtures:[],screenshots:[],extractions:[],verifications:[]};
 function clone(x){return JSON.parse(JSON.stringify(x));}
 export function getAppData(){try{return {...seed,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{return clone(seed)}}
