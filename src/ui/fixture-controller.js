@@ -1,33 +1,7 @@
 import {getAppData,saveAppData} from '../data/app-store.js';
 import {fixtureWorkspaceHtml} from './fixture-workspace.js';
-import {scanGame} from './workflow.js';
+import {scanGame} from './scan-game.js';
 import {reportWorkspaceHtml} from './report-workspace.js';
-
-export function mountFixtureWorkspace(root,fixture){
-  const render=()=>{
-    const data=getAppData();
-    const screenshots=data.screenshots.filter(s=>String(s.fixtureId)===String(fixture.id));
-    const pdfs=data.pdfs?.filter(p=>String(p.fixtureId)===String(fixture.id))||[];
-    root.innerHTML=fixtureWorkspaceHtml(fixture,{screenshots,pdfs,scanning:false});
-    const imageInput=root.querySelector('#fixture-images');
-    const pdfInput=root.querySelector('#fixture-pdf');
-    imageInput?.addEventListener('change',e=>{const files=[...e.target.files||[]];if(files.length){saveFiles(fixture.id,files);render()}});
-    pdfInput?.addEventListener('change',e=>{const file=e.target.files?.[0];if(file){savePdf(fixture.id,file).then(render)}});
-    root.querySelector('#scan-game')?.addEventListener('click',async()=>{
-      const button=root.querySelector('#scan-game');button.disabled=true;button.textContent='Scanning game…';
-      try{await scanGame(fixture.id);renderReport(root,fixture.id)}catch(err){console.error(err);alert(err.message||'Scan failed');button.disabled=false;button.textContent='Scan game'}
-    });
-    root.querySelector('#view-report')?.addEventListener('click',()=>renderReport(root,fixture.id));
-  };
-  render();
-  return {refresh:render};
-}
-
-async function saveFiles(fixtureId,files){
-  const d=getAppData();d.screenshots=d.screenshots||[];
-  for(const file of files){d.screenshots.push({id:crypto.randomUUID(),fixtureId,filename:file.name,mimeType:file.type,size:file.size,data:await readFile(file),category:'unknown',uploadedAt:new Date().toISOString()})}
-  saveAppData(d);
-}
-async function savePdf(fixtureId,file){const d=getAppData();d.pdfs=d.pdfs||[];d.pdfs.push({id:crypto.randomUUID(),fixtureId,filename:file.name,mimeType:file.type,size:file.size,data:await readFile(file),uploadedAt:new Date().toISOString()});saveAppData(d)}
-function readFile(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
-function renderReport(root,fixtureId){const d=getAppData();const fixture=d.fixtures.find(f=>String(f.id)===String(fixtureId));root.innerHTML=reportWorkspaceHtml(fixture,d);root.querySelector('#back-to-workspace')?.addEventListener('click',()=>mountFixtureWorkspace(root,fixture).refresh())}
+export function mountFixtureWorkspace(root,fixture){const render=()=>{const d=getAppData(),shots=d.screenshots.filter(x=>String(x.fixtureId)===String(fixture.id)),pdfs=(d.pdfs||[]).filter(x=>String(x.fixtureId)===String(fixture.id));root.innerHTML=fixtureWorkspaceHtml(fixture,{screenshots:shots,pdfs});const ii=root.querySelector('#fixture-images'),pi=root.querySelector('#fixture-pdf');ii?.addEventListener('change',async e=>{for(const file of [...e.target.files||[]]){const data=await read(file);d.screenshots.push({id:crypto.randomUUID(),fixtureId:fixture.id,filename:file.name,mimeType:file.type,size:file.size,data,uploadedAt:new Date().toISOString()})}saveAppData(d);render()});pi?.addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;d.pdfs=(d.pdfs||[]).filter(x=>String(x.fixtureId)!==String(fixture.id));d.pdfs.push({id:crypto.randomUUID(),fixtureId:fixture.id,filename:file.name,mimeType:file.type,size:file.size,data:await read(file),uploadedAt:new Date().toISOString()});saveAppData(d);render()});root.querySelector('#scan-game')?.addEventListener('click',async()=>{const b=root.querySelector('#scan-game');b.disabled=true;b.textContent='Scanning game…';try{await scanGame(fixture.id);showReport(root,fixture.id)}catch(e){alert(e.message);render()}});root.querySelector('#view-report')?.addEventListener('click',()=>showReport(root,fixture.id))};render();return {refresh:render}}
+const read=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)});
+function showReport(root,id){const d=getAppData(),f=d.fixtures.find(x=>String(x.id)===String(id));root.innerHTML=reportWorkspaceHtml(f,d);root.querySelector('#back-to-workspace')?.addEventListener('click',()=>mountFixtureWorkspace(root,f).refresh())}
