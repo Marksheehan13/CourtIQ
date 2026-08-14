@@ -1,0 +1,2 @@
+const keys=['min','pts','fgm','fga','tpm','tpa','ftm','fta','oreb','dreb','reb','ast','stl','blk','to','pf','plusMinus'];
+export function normalizeOcrResult(raw={}){const rows=Array.isArray(raw.rows)?raw.rows:[];const norm=r=>{const x={...r};for(const k of keys){if(x[k]!==null&&x[k]!==undefined&&x[k]!=='')x[k]=Number(x[k]);else if(x[k]!==0)x[k]=null}x.name=x.name??x.player??null;x.number=x.number??x.jersey??null;if(x.reb===null&&x.oreb!==null&&x.dreb!==null)x.reb=x.oreb+x.dreb;return x};return {...raw,rows:rows.map(norm),teamTotals:raw.teamTotals||{home:{},away:{}}};}
