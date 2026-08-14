@@ -1,0 +1,1 @@
+export default async request=>{const key=process.env.GEMINI_API_KEY;return new Response(JSON.stringify({ok:Boolean(key),provider:'gemini',configured:Boolean(key)}),{status:200,headers:{'content-type':'application/json','cache-control':'no-store'}})};
